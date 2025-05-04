@@ -27,7 +27,7 @@ func main() {
 		* The len function when passed a string returns the number of bytes the string is.
 		* If you want to find the number of characters in a string you would have call
 
-		*  In Go, You can look at string in to ways
+		*  In Go, You can look at string in two ways
 			One being as a collection of bytes,
 			Second being a collection of runes and characters.
 
@@ -62,7 +62,7 @@ Function parameters:
 
   - All function parameters are passed by value.
 
-  - This means that every function gets a copy of the arguments passed that function.
+  - This means that every function gets a copy of the arguments passed to that function.
 
   - Go types are concrete types.
 
@@ -72,7 +72,7 @@ Function parameters:
 */
 func banner(text string, width int) {
 	// := means declare a variable and assign the value of the expression on the right
-	// This vatiable is useing type inference
+	// This variable is using type inference
 	// padding := (width - len(text)) / 2 // This line has a bug
 	padding := (width - utf8.RuneCountInString(text)) / 2
 
