@@ -7,14 +7,14 @@ package main
 // Import the net/http package.
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 )
 
 func main() {
-	name, numRepos, err := getGithubInfo("https://api.github.com/users/tebeka")
+	name, numRepos, err := getGithubInfo("tebeka")
 	if err != nil {
 		log.Fatalf("error: unable to get github info %s", err)
 	}
@@ -44,7 +44,9 @@ func getGithubInfo(login string) (string, int, error) {
 	// Note that the fucntion is returning 2 values. Go function can return multiple values.
 	// resp is a pointer to the http.Response
 	// err is an error returned in case of an http protocol error
-	resp, err := http.Get(login)
+	// PathEscape makes sure it escapes invalid characters in the url path like + sign or other characters which might break the url
+	url := "https://api.github.com/users/" + url.PathEscape(login)
+	resp, err := http.Get(url)
 	// you should close the response body after you are done with it.
 	// You can use defer to defer the closing of the response body
 
@@ -65,7 +67,7 @@ func getGithubInfo(login string) (string, int, error) {
 	// Check response status
 	if resp.StatusCode != http.StatusOK {
 		// log.Fatalf("error: %s", resp.Status)
-		return "", 0, errors.New("recieved an non success response")
+		return "", 0, fmt.Errorf("%v - %s", url, resp.Status)
 	}
 	defer resp.Body.Close()
 	// Check content type
@@ -113,7 +115,18 @@ func getGithubInfo(login string) (string, int, error) {
 	*/
 
 	// Intialize a variable with type of reply
-	var r Reply
+	// var r Reply
+
+	// This is an anonymous struct. anonymous structs dont have a type.
+	// The anonymus struct does not need a type. Use it in places where you need a one off struct which wont be used anywhere else
+	var r struct {
+		Name string
+		// The type of int here is telling go that whenever you see a number in a json cast it to an int.
+		// Similarly if you had put float64 here, Go would cast it to a float 64 when the JSON fields get mapped from JSON to Go.
+		Public_Repos int
+		// This is called a field tags, this can be useful if the struct field name is differnt from the json field
+		NumRepos int `json:"public_repos"`
+	}
 	// Create a new decoder
 	dec := json.NewDecoder(resp.Body)
 	// Try to map the json fields in the reply struct. We must pass a pointer to the reply variable
