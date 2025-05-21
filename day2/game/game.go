@@ -17,6 +17,64 @@ type Item struct {
 type Player struct {
 	Name string
 	Item // Embed Item struct into player struct. This is called embedding
+	Keys []Key
+}
+
+func (p *Player) FoundKey(k Key) error {
+	if k < Jade || k > invalidKey {
+		return fmt.Errorf("invalid key: %#v", k)
+	}
+
+	if !containsKey(p.Keys, k) {
+		p.Keys = append(p.Keys, k)
+	}
+	return nil
+}
+
+func containsKey(keys []Key, k Key) bool {
+	for _, k2 := range keys {
+		if k2 == k {
+			return true
+		}
+	}
+	return false
+}
+
+/*
+	This is go's version of an enum
+*/
+const (
+	// Key is a type here of byte
+	// iota is like an incrementer, so jade will get 1, Copper 2 and Crystal 3
+	Jade Key = iota + 1
+	Copper
+	Crystal
+	invalidKey // unexporetd
+)
+
+type Key byte
+
+/*
+	IN go you can write a function for how you want an object to look like as a String.
+
+	When this String method exists for the receiver of K, it will use this method
+	whenever a print is called on the Key type like fmt.Println(k)
+
+	Since we have defined a string method on the Key type, This Key type is now implementing the
+	Stringer interface
+*/
+func (k Key) String() string {
+	switch k {
+	case Jade:
+		return "jade"
+	case Copper:
+		return "copper"
+	case Crystal:
+		return "crystal"
+	}
+
+	// 	return fmt.Sprintf("<Key %s>", k) will cause compiling warning since %s is infinitely checking if k has a string method and calling it again and again
+	return fmt.Sprintf("<Key %d>", k)
 }
 
 /*
@@ -30,6 +88,19 @@ type Player struct {
 	In our main function in this file, p1, i1 to i3 have the Move function,
 	Either by mebedding or otherwise.const
 
+	Using interfaces:
+	1. You can create an interface and have it be implemented by types. Then you can just specify
+	the interface in the arguments and any type that implements that interface can be passed into that function.
+	This also gives the flexibility for ther function to get multiple types and offer decoupling of interfaces from concrete types.
+
+	2. You can have your types implemnet interfaces which will cause Go to look at your code deifferently, as in
+	if your type impplement an interface, it will run the String method when the object is being printed.
+
+
+	interface tell you what we want from a type to do, not what an interface provides to the type like other languages
+
+	Make sure the interfaces are small, meaning require less methods to be implemented by types.
+	Smaller interfaces mean better abstraction and fl;exibility, more types can implement the interfaces
 */
 type mover interface {
 	Move(x, y int)
@@ -110,6 +181,7 @@ func main() {
 	p1 := Player{
 		Name: "Parzival",
 		Item: Item{500, 500},
+		Keys: []Key{Jade, Crystal, Copper},
 	}
 
 	fmt.Printf("p1 is: %#v\n", p1)
@@ -152,6 +224,13 @@ func main() {
 	for _, m := range ms {
 		fmt.Println("m is: ", m)
 	}
+
+	k := Jade
+	fmt.Println("k is: ", k)
+	p1.FoundKey(Jade)
+	fmt.Println("Keys: ", p1.Keys)
+	p1.FoundKey(Jade)
+	fmt.Println("Keys: ", p1.Keys)
 }
 
 /*
