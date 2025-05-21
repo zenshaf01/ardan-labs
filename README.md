@@ -21,4 +21,9 @@ Why Go ?
 * Compiles to static executable
 * Great community
 
+# helpful commands
+- go run {file name}
+- go build {file name}
+- go build -gcflags=-m
+
 
