@@ -22,8 +22,10 @@ Why Go ?
 * Great community
 
 # helpful commands
+- go mod init -> initialises a directory as a go project.
 - go run {file name}
 - go build {file name}
 - go build -gcflags=-m
+- GOOS=linux go build -> builds for linux / other OS
 
 
