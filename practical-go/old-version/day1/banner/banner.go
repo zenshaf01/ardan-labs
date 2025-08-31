@@ -6,21 +6,21 @@ import (
 )
 
 /*
-* Go has full support for Unicode. All strings are unicode characters
-* A single unicode code point / character is called a rune in go.
+* Go has full support for Unicode. All strings are Unicode characters
+* A single Unicode code point / character is called a rune in go.
 * A rune is created by ''
  */
 
 func main() {
 	banner("Go", 6)
-	banner("G☺", 6) // With a smiley unicode emoji
+	banner("G☺", 6) // With a smiley Unicode emoji
 	s := "G☺"
 	/*
 		* In Unicode we have a number for each character in every language in the world
-		* The below line prints 4 coz of the unicode character used in the string.
+		* The below line prints 4 coz of the Unicode character used in the string.
 		* The reason being the number which represents the smiley emoji cannot fit in 1 byte.
-		* UTF-8 is an encoding scheme which has a map of what symbol has what unicode number
-		* UTF-8 character, rune, unicode code point can be from 1 byte to 4 bytes.
+		* UTF-8 is an encoding scheme which has a map of what symbol has what Unicode number
+		* UTF-8 character, rune, Unicode code point can be from 1 byte to 4 bytes.
 		* So below line is 1 byte for the letter G and 3 bytes for the smiley face emoji.
 
 
